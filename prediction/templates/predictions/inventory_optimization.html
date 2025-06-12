@@ -1,0 +1,51 @@
+{% extends "predictions/index.html" %}
+{% load static %}
+{% block inventory_optimizationactive %}active{% endblock inventory_optimizationactive %}
+{% block css %}
+<style>
+    #chat-reply {
+        margin-top: 20px;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+    <h2>Inventory Levels</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Reorder Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in inventory %}
+                <tr>
+                    <td>{{ item.0 }}</td>
+                    <td>{{ item.1 }}</td>
+                    <td>{{ item.2 }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Low Inventory Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Reorder Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in low_inventory %}
+                <tr>
+                    <td>{{ item.0 }}</td>
+                    <td>{{ item.1 }}</td>
+                    <td>{{ item.2 }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock body %}

@@ -1,0 +1,61 @@
+{% extends "predictions/index.html" %}
+{% load static %}
+
+{% block demand_forecastingactive %}active{% endblock demand_forecastingactive %}
+
+{% block css %}
+<style>
+  #chat-reply {
+    margin-top: 20px;
+  }
+</style>
+{% endblock css %}
+
+{% block body %}
+<main class="container mt-5">
+  <h1>Demand Forecasting</h1>
+
+  {% if form.errors %}
+    <div class="alert alert-danger">
+      <ul>
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li>{{ field.label }}: {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="product_name" class="form-label">Product Name</label>
+      <input type="text" class="form-control" id="product_name" name="product_name" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="sales_date" class="form-label">Sales Date</label>
+      <input type="date" class="form-control" id="sales_date" name="sales_date" required>
+    </div>
+
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="promotion" name="promotion">
+      <label class="form-check-label" for="promotion">Promotion</label>
+    </div>
+
+    <div class="mb-3">
+      <label for="season" class="form-label">Season</label>
+      <select class="form-select" id="season" name="season" required>
+        <option value="">Select a season</option>
+        <option value="Winter">Winter</option>
+        <option value="Spring">Spring</option>
+        <option value="Summer">Summer</option>
+        <option value="Autumn">Autumn</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Forecast</button>
+  </form>
+</main>
+{% endblock body %}

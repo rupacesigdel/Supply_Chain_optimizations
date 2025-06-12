@@ -1,0 +1,84 @@
+{% extends "predictions/index.html" %}
+{% load static %}
+{% block shipment_predictionactive %}{% endblock shipment_predictionactive %}{% block css %}
+<style>
+    #chat-reply {
+        margin-top: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+<main class="container py-4">
+    <h2>Recent Shipments</h2>
+    {% if recent_shipments %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Dispatch Date</th>
+                    <th>Expected Arrival Date</th>
+                    <th>Traffic Conditions</th>
+                    <th>Weather Conditions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for shipment in recent_shipments %}
+                    <tr>
+                        <td>{{ shipment.0 }}</td>
+                        <td>{{ shipment.1 }}</td>
+                        <td>{{ shipment.2|date:"Y-m-d" }}</td> <!-- Format date -->
+                        <td>{{ shipment.3|date:"Y-m-d" }}</td> <!-- Format date -->
+                        <td>{{ shipment.4 }}</td>
+                        <td>{{ shipment.5 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No recent shipments to display.</p>
+    {% endif %}
+
+    <h2>Recent Sales</h2>
+    {% if recent_sales %}
+        <table class="table table-bordered table-hover table-sm">
+            <caption>Recent Sales Overview</caption>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Sales Date</th>
+                    <th>Sales Quantity</th>
+                    <th>Promotion</th>
+                    <th>Season</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in recent_sales %}
+                    <tr>
+                        <td>{{ sale.0 }}</td>
+                        <td>{{ sale.1|date:"Y-m-d" }}</td> <!-- Format date -->
+                        <td>{{ sale.2 }}</td>
+                        <td>{{ sale.3 }}</td>
+                        <td>{{ sale.4 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No recent sales to display.</p>
+    {% endif %}
+</main>
+{% endblock body %}

@@ -1,0 +1,33 @@
+{% extends "predictions/index.html" %}
+{% load static %}
+
+{% block demand_forecastingactive %}active{% endblock demand_forecastingactive %}
+
+{% block css %}
+<style>
+  #chat-reply {
+    margin-top: 20px;
+  }
+</style>
+{% endblock css %}
+
+{% block body %}
+<div class="container mt-5">
+  <h1 class="mb-4">Demand Forecasting Result</h1>
+
+  <div class="card">
+    <div class="card-body">
+      {% if error %}
+        <div class="alert alert-danger" role="alert">
+          <strong>Error:</strong> {{ error }}
+        </div>
+      {% else %}
+        <div class="alert alert-success" role="alert">
+          <strong>Predicted Sales:</strong> {{ predicted_sales }}
+        </div>
+      {% endif %}
+      <a href="{% url 'demand_forecasting' %}" class="btn btn-secondary mt-3">Back to Form</a>
+    </div>
+  </div>
+</div>
+{% endblock body %}

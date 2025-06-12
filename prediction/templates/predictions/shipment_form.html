@@ -1,0 +1,43 @@
+{% extends "predictions/index.html" %}
+{% load static %}
+{% block shipment_predictionactive %}active{% endblock shipment_predictionactive %}
+{% block css %}
+<style>
+    #chat-reply {
+        margin-top: 20px;
+    }
+</style>
+{% endblock css %}
+{% block body %}
+<div class="container mt-5">
+    <h1>Shipment Prediction</h1>
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="origin" class="form-label">Origin</label>
+        <input type="text" class="form-control" id="origin" name="origin">
+      </div>
+      <div class="mb-3">
+        <label for="destination" class="form-label">Destination</label>
+        <input type="text" class="form-control" id="destination" name="destination">
+      </div>
+      <div class="mb-3">
+        <label for="dispatch_date" class="form-label">Dispatch Date</label>
+        <input type="date" class="form-control" id="dispatch_date" name="dispatch_date">
+      </div>
+      <div class="mb-3">
+        <label for="expected_arrival_date" class="form-label">Expected Arrival Date</label>
+        <input type="date" class="form-control" id="expected_arrival_date" name="expected_arrival_date">
+      </div>
+      <div class="mb-3">
+        <label for="traffic_conditions" class="form-label">Traffic Conditions</label>
+        <input type="text" class="form-control" id="traffic_conditions" name="traffic_conditions">
+      </div>
+      <div class="mb-3">
+        <label for="weather_conditions" class="form-label">Weather Conditions</label>
+        <input type="text" class="form-control" id="weather_conditions" name="weather_conditions">
+      </div>
+      <button type="submit" class="btn btn-primary">Predict</button>
+    </form>
+  </div>
+{% endblock body %}
