@@ -49,8 +49,8 @@ This project is a Django-based web application designed to provide insights and 
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/rupacesigdel/Supply-Chain-Optimization.git
-    cd Supply-Chain-Optimization
+    git clone https://github.com/rupacesigdel/Supply_Chain_optimizations.git
+    cd Supply-Chain-Optimizations
     ```
 
 2. **Create a Virtual Environment:**
