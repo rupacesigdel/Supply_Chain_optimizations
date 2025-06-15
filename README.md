@@ -2,7 +2,7 @@
 # Supply Chain Optimization Dashboard
 
 ## Overview
-This project is a Django-based web application designed to provide insights and predictions related to supply chain management. It integrates MindsDB for machine learning predictions, allowing users to forecast demand, predict shipment delays, and optimize inventory levels.
+This project is a Django-based web application designed to provide insights and prediction related to supply chain management. It integrates MindsDB for machine learning prediction, allowing users to forecast demand, predict shipment delays, and optimize inventory levels.
 
 ## Contain
 
@@ -74,9 +74,9 @@ This project is a Django-based web application designed to provide insights and 
 
 
 ## Project Structure
-supply_chain_opt/
-- │
-- ├── supply_chain_opt/             
+supply_chain_optimizations/
+- 
+- ├── supply_chain_management/             
 - │   ├── __init__.py
 - │   ├── asgi.py
 - │   ├── celery.py                   
@@ -84,7 +84,7 @@ supply_chain_opt/
 - │   ├── urls.py
 - │   └── wsgi.py
 - │
-- ├── predictions/                        
+- ├── prediction/                        
 - │   ├── __init__.py
 - │   ├── admin.py
 - │   ├── apps.py
@@ -92,22 +92,23 @@ supply_chain_opt/
 - │   ├── tasks.py                   
 - │   ├── test.py                   
 - │   ├── views.py                   
-- │   ├── mindsdb_utils.py                                   
-- │   ├── templates/                                   
-- │     ├── predictions/
+- │   ├── mindsdb_utils.py
+- │   ├── templates/
+- │     ├── prediction/
 - │        ├── index.html
 - │        ├── shipment_form.html
 - │        ├── shipment_result.html
 - │        ├── inventory_optimization.html
 - │        ├── demand_form.html
 - │        └── demand_result.html
-- │
 - │   ├── forms.py
 - │   └── urls.py                         
 - │
 - ├── static/                           
 - │
+- ├── dockerfile
 - ├── manage.py
+- ├── predict.sql
 - └── requirements.txt    
 
 
