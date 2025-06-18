@@ -52,7 +52,7 @@
         CREATE AGENT supply_chain_agent
         USING
         model = 'gemini-1.5-flash',
-        google_api_key = 'AIzaSyCB3TIDwcsNh29QdPmuF8_TXfQQh8jo2Oo',
+        google_api_key = 'YOUR_GOOGLE_API_KEY',
         include_knowledge_bases = ['mindsdb.demand_kb', 'mindsdb.shipment_kb'],
         prompt_template = '
             mindsdb.demand_kb contains sales and demand data.
