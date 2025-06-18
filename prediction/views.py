@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.db import connection
 from .mindsdb_utils import predict_demand, predict_shipment_delay
 import mindsdb_sdk  as SDK
+from mindsdb_sdk import connect
 
 def dashboard(request):
     try:
@@ -115,3 +116,38 @@ def check_predictor():
         print("Predictor found:", predictor)
     except Exception as e:
         print("Error:", str(e))
+
+import mysql.connector
+from django.shortcuts import render
+
+def agent_query(request):
+    if request.method == 'POST':
+        question = request.POST.get('question')
+        try:
+            conn = mysql.connector.connect(
+                host='mindsdb',
+                port=47335,
+                user='mindsdb',
+                password='',
+                database='mindsdb'
+            )
+            cursor = conn.cursor()
+            query = f"""
+                SELECT answer
+                FROM supply_chain_agent
+                WHERE question = '{question}'
+            """
+            cursor.execute(query)
+            result = cursor.fetchone()
+            answer = result[0] if result else "No answer from agent."
+            cursor.close()
+            conn.close()
+        except Exception as e:
+            answer = f"Error querying MindsDB agent: {str(e)}"
+
+        return render(request, 'prediction/agent_response.html', {
+            'question': question,
+            'answer': answer
+        })
+
+    return render(request, 'prediction/agent_form.html')

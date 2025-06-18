@@ -1,0 +1,29 @@
+{% extends "prediction/index.html" %}
+{% load static %}
+
+{% block css %}
+<style>
+    .form-container {
+        margin-top: 30px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+{% endblock css %}
+
+{% block body %}
+<main class="container py-4">
+    <div class="form-container">
+        <h2 class="mb-4">Ask Supply Chain Agent</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="question" class="form-label">Your Question:</label>
+                <textarea name="question" id="question" class="form-control" rows="4" required>{{ question|default:"" }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Ask Agent</button>
+        </form>
+    </div>
+</main>
+{% endblock body %}
