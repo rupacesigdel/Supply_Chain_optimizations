@@ -1,0 +1,16 @@
+services:
+  mindsdb:
+    image: mindsdb/mindsdb
+    ports:
+      - "47334:47334"
+      - "47335:47335"
+    restart: unless-stopped
+
+  web:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mindsdb

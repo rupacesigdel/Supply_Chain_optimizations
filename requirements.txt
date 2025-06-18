@@ -1,4 +1,6 @@
 Django
 psycopg2-binary
-mindsdb
+mindsdb-sdk
 python-dotenv
+fluvio
+mysql-connector-python

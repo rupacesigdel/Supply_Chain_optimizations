@@ -1,3 +1,4 @@
+# Dockerfile
 FROM python:3.10-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -7,19 +8,19 @@ ENV PATH="/root/.cargo/bin:$PATH"
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
-    git \
     libssl-dev \
     libffi-dev \
-    pkg-config \
     gcc \
+    pkg-config \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
-RUN pip install --upgrade pip \
-    && pip install mindsdb-sdk fluvio
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 WORKDIR /app
 COPY . /app
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
