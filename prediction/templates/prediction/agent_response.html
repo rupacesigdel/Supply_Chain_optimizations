@@ -1,0 +1,28 @@
+{% extends "prediction/index.html" %}
+{% load static %}
+
+{% block css %}
+<style>
+    .response-container {
+        margin-top: 30px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+{% endblock css %}
+
+{% block body %}
+<main class="container py-4">
+    <div class="response-container">
+        <h2 class="mb-4">Agent Response</h2>
+        <div class="alert alert-info">
+            <strong>Question:</strong> {{ question }}
+        </div>
+        <div class="alert alert-success">
+            <strong>Answer:</strong> {{ answer }}
+        </div>
+        <a href="{% url 'agent_query' %}" class="btn btn-secondary">Ask Another Question</a>
+    </div>
+</main>
+{% endblock body %}
