@@ -1,51 +1,188 @@
 {% extends "prediction/index.html" %}
 {% load static %}
-{% block inventory_optimizationactive %}active{% endblock inventory_optimizationactive %}
+
+{% block inventory_optimizationactive %}active{% endblock %}
+
 {% block css %}
 <style>
-    #chat-reply {
-        margin-top: 20px;
-    }
+  .inventory-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+  }
+  
+  .summary-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+  }
+  
+  .summary-item {
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .summary-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #4e73df;
+  }
+  
+  .summary-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+  
+  .critical-value {
+    color: #ef4444;
+  }
+  
+  .inventory-table {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .inventory-table th {
+    background: linear-gradient(135deg, #4e73df 0%, #2a48ad 100%);
+    color: white;
+    font-weight: 500;
+  }
+  
+  .status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  
+  .status-low {
+    background-color: #ef4444;
+  }
+  
+  .status-ok {
+    background-color: #10b981;
+  }
+  
+  .badge-critical {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
 </style>
-{% endblock css %}
-{% block body %}
-    <h2>Inventory Levels</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Reorder Level</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in inventory %}
-                <tr>
-                    <td>{{ item.0 }}</td>
-                    <td>{{ item.1 }}</td>
-                    <td>{{ item.2 }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% endblock %}
 
-    <h2>Low Inventory Items</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
+{% block body %}
+<div class="inventory-container">
+  {% if error %}
+    <div class="alert alert-danger">
+      <i class="fas fa-exclamation-circle me-2"></i>
+      {{ error }}
+    </div>
+  {% endif %}
+  
+  <div class="card summary-card">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <div class="summary-item">
+          <div class="summary-value">{{ inventory_count }}</div>
+          <div class="summary-label">Total Products</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="summary-item">
+          <div class="summary-value critical-value">{{ critical_count }}</div>
+          <div class="summary-label">Critical Items</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="summary-item">
+          <div class="summary-value critical-value">{{ total_deficit }}</div>
+          <div class="summary-label">Total Deficit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card mb-4">
+    <div class="card-header bg-white">
+      <h4 class="mb-0"><i class="fas fa-boxes me-2"></i> Critical Inventory Items</h4>
+    </div>
+    <div class="card-body p-0">
+      {% if low_inventory %}
+        <div class="table-responsive">
+          <table class="table inventory-table mb-0">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Current Quantity</th>
                 <th>Reorder Level</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in low_inventory %}
+                <th>Deficit</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in low_inventory %}
                 <tr>
-                    <td>{{ item.0 }}</td>
-                    <td>{{ item.1 }}</td>
-                    <td>{{ item.2 }}</td>
+                  <td>{{ item.0 }}</td>
+                  <td>
+                    <span class="status-indicator status-low"></span>
+                    {{ item.1 }}
+                  </td>
+                  <td>{{ item.2 }}</td>
+                  <td class="text-danger fw-bold">{{ item.3 }}</td>
+                  <td><span class="badge badge-critical">Critical</span></td>
                 </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="text-center py-4">
+          <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+          <h5>No critical inventory items</h5>
+          <p class="text-muted">All products are above reorder levels</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header bg-white">
+      <h4 class="mb-0"><i class="fas fa-clipboard-list me-2"></i> Full Inventory List</h4>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table inventory-table mb-0">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Current Quantity</th>
+              <th>Reorder Level</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in inventory %}
+              <tr>
+                <td>{{ item.0 }}</td>
+                <td>
+                  <span class="status-indicator {% if item.1 < item.2 %}status-low{% else %}status-ok{% endif %}"></span>
+                  {{ item.1 }}
+                </td>
+                <td>{{ item.2 }}</td>
+                <td>
+                  {% if item.1 < item.2 %}
+                    <span class="text-danger">Reorder Needed</span>
+                  {% else %}
+                    <span class="text-success">In Stock</span>
+                  {% endif %}
+                </td>
+              </tr>
             {% endfor %}
-        </tbody>
-    </table>
-{% endblock body %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

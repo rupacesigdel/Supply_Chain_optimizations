@@ -1,16 +1,104 @@
 {% extends "prediction/index.html" %}
 {% load static %}
-{% block shipment_predictionactive %}active{% endblock shipment_predictionactive %}
+
+{% block shipment_predictionactive %}active{% endblock %}
+
 {% block css %}
 <style>
-    #chat-reply {
-        margin-top: 20px;
-    }
+  .result-card {
+    max-width: 800px;
+    margin: 2rem auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  
+  .result-header {
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .result-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #4e73df;
+  }
+  
+  .detail-item {
+    margin-bottom: 1rem;
+  }
+  
+  .detail-label {
+    font-weight: 500;
+    color: #4a5568;
+  }
+  
+  .route-display {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    text-align: center;
+    font-weight: 500;
+  }
 </style>
-{% endblock css %}
+{% endblock %}
+
 {% block body %}
-<div class="container mt-5">
-    <h1>Shipment Prediction Result</h1>
-    <p>Predicted Arrival Date: {{ predicted_arrival_date }}</p>
+<div class="card result-card">
+  <div class="card-body p-4">
+    <div class="result-header">
+      <h2><i class="fas fa-shipping-fast me-2"></i> Shipment Prediction Result</h2>
+    </div>
+    
+    {% if error %}
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {{ error }}
+      </div>
+    {% else %}
+      <div class="route-display">
+        <i class="fas fa-map-marker-alt text-danger me-2"></i>
+        {{ origin }} 
+        <i class="fas fa-arrow-right mx-3 text-muted"></i>
+        <i class="fas fa-map-marker-alt text-success me-2"></i>
+        {{ destination }}
+      </div>
+      
+      <div class="text-center mb-4">
+        <p class="mb-2">Predicted Arrival Date</p>
+        <div class="result-value">{{ predicted_arrival_date }}</div>
+      </div>
+      
+      <div class="mt-4">
+        <h5 class="mb-3">Shipment Details</h5>
+        <div class="detail-item">
+          <span class="detail-label">Dispatch Date:</span>
+          <span>{{ dispatch_date }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Original ETA:</span>
+          <span>{{ expected_arrival_date }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Traffic Conditions:</span>
+          <span>{{ traffic_conditions }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Weather Conditions:</span>
+          <span>{{ weather_conditions }}</span>
+        </div>
+      </div>
+    {% endif %}
+    
+    <div class="mt-4">
+      <a href="{% url 'shipment_prediction' %}" class="btn btn-secondary me-2">
+        <i class="fas fa-arrow-left me-2"></i> Back to Form
+      </a>
+      <a href="{% url 'demand_forecasting' %}" class="btn btn-outline-primary">
+        <i class="fas fa-chart-line me-2"></i> Check Demand
+      </a>
+    </div>
+  </div>
 </div>
-{% endblock body %}
+{% endblock %}

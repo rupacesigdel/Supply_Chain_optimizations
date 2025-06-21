@@ -1,43 +1,215 @@
 {% extends "prediction/index.html" %}
 {% load static %}
+
 {% block shipment_predictionactive %}active{% endblock shipment_predictionactive %}
+
 {% block css %}
 <style>
-    #chat-reply {
-        margin-top: 20px;
+    .prediction-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #2c3e50;
+        position: relative;
+    }
+
+    .form-header h1 {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-header::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, #4e73df 0%, #2a48ad 100%);
+        margin: 0.5rem auto 0;
+        border-radius: 2px;
+    }
+
+    .form-group {
+        margin-bottom: 1.75rem;
+        position: relative;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #4a5568;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.85rem 1.25rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        background-color: #f8fafc;
+    }
+
+    .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.2);
+        outline: none;
+        background-color: white;
+    }
+
+    .date-input-container {
+        position: relative;
+    }
+
+    .date-input-container::after {
+        content: '📅';
+        position: absolute;
+        right: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .btn-predict {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #4e73df 0%, #2a48ad 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.05rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(78, 115, 223, 0.2);
+        margin-top: 1rem;
+    }
+
+    .btn-predict:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px rgba(78, 115, 223, 0.3);
+    }
+
+    .btn-predict:active {
+        transform: translateY(0);
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .condition-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1em;
+    }
+
+    @media (max-width: 768px) {
+        .prediction-container {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
     }
 </style>
 {% endblock css %}
+
 {% block body %}
-<div class="container mt-5">
-    <h1>Shipment Prediction</h1>
-    <form method="post">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label for="origin" class="form-label">Origin</label>
-        <input type="text" class="form-control" id="origin" name="origin">
-      </div>
-      <div class="mb-3">
-        <label for="destination" class="form-label">Destination</label>
-        <input type="text" class="form-control" id="destination" name="destination">
-      </div>
-      <div class="mb-3">
-        <label for="dispatch_date" class="form-label">Dispatch Date</label>
-        <input type="date" class="form-control" id="dispatch_date" name="dispatch_date">
-      </div>
-      <div class="mb-3">
-        <label for="expected_arrival_date" class="form-label">Expected Arrival Date</label>
-        <input type="date" class="form-control" id="expected_arrival_date" name="expected_arrival_date">
-      </div>
-      <div class="mb-3">
-        <label for="traffic_conditions" class="form-label">Traffic Conditions</label>
-        <input type="text" class="form-control" id="traffic_conditions" name="traffic_conditions">
-      </div>
-      <div class="mb-3">
-        <label for="weather_conditions" class="form-label">Weather Conditions</label>
-        <input type="text" class="form-control" id="weather_conditions" name="weather_conditions">
-      </div>
-      <button type="submit" class="btn btn-primary">Predict</button>
-    </form>
-  </div>
+<main class="container py-4">
+    <div class="prediction-container">
+        <div class="form-header">
+            <h1>Shipment Prediction</h1>
+            <p>Estimate delivery times based on route and conditions</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="origin" class="form-label">Origin</label>
+                <input type="text" class="form-control" id="origin" name="origin" placeholder="e.g. New York" required>
+                <i class="fas fa-map-marker-alt input-icon"></i>
+            </div>
+
+            <div class="form-group">
+                <label for="destination" class="form-label">Destination</label>
+                <input type="text" class="form-control" id="destination" name="destination" placeholder="e.g. Los Angeles" required>
+                <i class="fas fa-map-marker-alt input-icon"></i>
+            </div>
+
+            <div class="form-group date-input-container">
+                <label for="dispatch_date" class="form-label">Dispatch Date</label>
+                <input type="date" class="form-control" id="dispatch_date" name="dispatch_date" required>
+            </div>
+
+            <div class="form-group date-input-container">
+                <label for="expected_arrival_date" class="form-label">Expected Arrival Date</label>
+                <input type="date" class="form-control" id="expected_arrival_date" name="expected_arrival_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="traffic_conditions" class="form-label">Traffic Conditions</label>
+                <select class="form-control condition-select" id="traffic_conditions" name="traffic_conditions" required>
+                    <option value="" disabled selected>Select traffic condition</option>
+                    <option value="Light">Light</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="Heavy">Heavy</option>
+                    <option value="Severe">Severe</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="weather_conditions" class="form-label">Weather Conditions</label>
+                <select class="form-control condition-select" id="weather_conditions" name="weather_conditions" required>
+                    <option value="" disabled selected>Select weather condition</option>
+                    <option value="Clear">Clear</option>
+                    <option value="Rainy">Rainy</option>
+                    <option value="Snowy">Snowy</option>
+                    <option value="Stormy">Stormy</option>
+                    <option value="Foggy">Foggy</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-predict">
+                <span class="submit-text">Predict Delivery Date</span>
+                <i class="fas fa-rocket ml-2"></i>
+            </button>
+        </form>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('dispatch_date').min = today;
+        
+        document.getElementById('dispatch_date').addEventListener('change', function() {
+            document.getElementById('expected_arrival_date').min = this.value;
+        });
+        
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.querySelector('.form-label').style.color = '#4e73df';
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.querySelector('.form-label').style.color = '#4a5568';
+            });
+        });
+    });
+</script>
 {% endblock body %}

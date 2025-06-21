@@ -5,57 +5,217 @@
 
 {% block css %}
 <style>
-  #chat-reply {
-    margin-top: 20px;
+  .forecasting-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+    position: relative;
+  }
+
+  .form-header h1 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-header::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #4e73df 0%, #2a48ad 100%);
+    margin: 0.5rem auto 0;
+    border-radius: 2px;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4a5568;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+  }
+
+  .form-control:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.2);
+    outline: none;
+  }
+
+  .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.75rem;
+    accent-color: #4e73df;
+    cursor: pointer;
+  }
+
+  .form-check-label {
+    color: #4a5568;
+    cursor: pointer;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #4e73df 0%, #2a48ad 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(78, 115, 223, 0.2);
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(78, 115, 223, 0.3);
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+  }
+
+  .error-list {
+    padding-left: 1.5rem;
+  }
+
+  .error-list li {
+    margin-bottom: 0.25rem;
+    color: #e53e3e;
+  }
+
+  .date-input-container {
+    position: relative;
+  }
+
+  .date-input-container::after {
+    content: '📅';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .forecasting-container {
+      padding: 1.5rem;
+      margin: 1rem;
+    }
   }
 </style>
 {% endblock css %}
 
 {% block body %}
-<main class="container mt-5">
-  <h1>Demand Forecasting</h1>
+<main class="container py-4">
+  <div class="forecasting-container">
+    <div class="form-header">
+      <h1>Demand Forecasting</h1>
+      <p>Predict future product demand based on historical data</p>
+    </div>
 
-  {% if form.errors %}
-    <div class="alert alert-danger">
-      <ul>
-        {% for field in form %}
-          {% for error in field.errors %}
-            <li>{{ field.label }}: {{ error }}</li>
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        <ul class="error-list">
+          {% for field in form %}
+            {% for error in field.errors %}
+              <li>{{ field.label }}: {{ error }}</li>
+            {% endfor %}
           {% endfor %}
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
+        </ul>
+      </div>
+    {% endif %}
 
-  <form method="post">
-    {% csrf_token %}
-    <div class="mb-3">
-      <label for="product_name" class="form-label">Product Name</label>
-      <input type="text" class="form-control" id="product_name" name="product_name" required>
-    </div>
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="product_name" class="form-label">Product Name</label>
+        <input type="text" class="form-control" id="product_name" name="product_name" required 
+               placeholder="Enter product name">
+      </div>
 
-    <div class="mb-3">
-      <label for="sales_date" class="form-label">Sales Date</label>
-      <input type="date" class="form-control" id="sales_date" name="sales_date" required>
-    </div>
+      <div class="form-group">
+        <label for="sales_date" class="form-label">Sales Date</label>
+        <div class="date-input-container">
+          <input type="date" class="form-control" id="sales_date" name="sales_date" required>
+        </div>
+      </div>
 
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="promotion" name="promotion">
-      <label class="form-check-label" for="promotion">Promotion</label>
-    </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="promotion" name="promotion">
+        <label class="form-check-label" for="promotion">This product will be on promotion</label>
+      </div>
 
-    <div class="mb-3">
-      <label for="season" class="form-label">Season</label>
-      <select class="form-select" id="season" name="season" required>
-        <option value="">Select a season</option>
-        <option value="Winter">Winter</option>
-        <option value="Spring">Spring</option>
-        <option value="Summer">Summer</option>
-        <option value="Autumn">Autumn</option>
-      </select>
-    </div>
+      <div class="form-group">
+        <label for="season" class="form-label">Season</label>
+        <select class="form-control" id="season" name="season" required>
+          <option value="" disabled selected>Select a season</option>
+          <option value="Winter">❄️ Winter</option>
+          <option value="Spring">🌸 Spring</option>
+          <option value="Summer">☀️ Summer</option>
+          <option value="Autumn">🍂 Autumn</option>
+        </select>
+      </div>
 
-    <button type="submit" class="btn btn-primary">Forecast</button>
-  </form>
+      <button type="submit" class="btn-submit">
+        <span class="submit-text">Generate Forecast</span>
+        <span class="submit-icon">👆</span>
+      </button>
+    </form>
+  </div>
 </main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentElement.querySelector('.form-label').style.color = '#4e73df';
+      });
+      input.addEventListener('blur', function() {
+        this.parentElement.querySelector('.form-label').style.color = '#4a5568';
+      });
+    });
+
+    const submitBtn = document.querySelector('.btn-submit');
+    if (submitBtn) {
+      submitBtn.addEventListener('mouseenter', function() {
+        this.querySelector('.submit-icon').style.transform = 'translateX(3px)';
+      });
+      submitBtn.addEventListener('mouseleave', function() {
+        this.querySelector('.submit-icon').style.transform = 'translateX(0)';
+      });
+    }
+  });
+</script>
 {% endblock body %}

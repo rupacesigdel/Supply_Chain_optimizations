@@ -57,7 +57,11 @@ This project is a Django-based web application designed to provide insights and 
 
     ```bash
     python -m venv myenv
-    source .venv/Scripts/activate
+    source .venv/Scripts/activate  # On windows
+    ```
+    ```bash
+    python3 -m venv myenv
+    source myenv/bin/activate # On macOS/Linux:
     ```
 
 3. **Upgrade pip (if needed):**
@@ -74,8 +78,7 @@ This project is a Django-based web application designed to provide insights and 
 
 
 ## Project Structure
-supply_chain_optimizations/
-- 
+- supply_chain_optimizations/
 - ├── supply_chain_management/             
 - │   ├── __init__.py
 - │   ├── asgi.py
@@ -83,26 +86,24 @@ supply_chain_optimizations/
 - │   ├── settings.py
 - │   ├── urls.py
 - │   └── wsgi.py
-- │
 - ├── prediction/                        
 - │   ├── __init__.py
 - │   ├── admin.py
 - │   ├── apps.py
+- │   ├── forms.py
+- │   ├── mindsdb_utils.py
 - │   ├── models.py
 - │   ├── tasks.py                   
 - │   ├── test.py                   
-- │   ├── views.py                   
-- │   ├── mindsdb_utils.py
-- │   ├── templates/
-- │     ├── prediction/
-- │        ├── index.html
-- │        ├── shipment_form.html
-- │        ├── shipment_result.html
-- │        ├── inventory_optimization.html
-- │        ├── demand_form.html
-- │        └── demand_result.html
-- │   ├── forms.py
-- │   └── urls.py                         
+- │   └──templates/prediction/
+- │ -     ├── index.html
+- │ -       ├── shipment_form.html
+- │ -       ├── shipment_result.html
+- │ -       ├── inventory_optimization.html
+- │ -       ├── demand_form.html
+- │ -      └── demand_result.html
+- │   ├── urls.py                         
+- │   └── views.py                   
 - │
 - ├── static/                           
 - │
@@ -116,13 +117,21 @@ supply_chain_optimizations/
 ## Usage
 1. **Start the Development Server:**
 
-    ```bash
+    ```sh
     python manage.py runserver
+    ```
+    OR :
+    ```sh
+    docker-compose up --build
     ```
 
 2. **Access the Web Application:**
 
-    Open your web browser and navigate to `http://127.0.0.1:8000/` to access the application.
+    Open your web browser and navigate to,
+    Access:
+   - Django App: `http://localhost:8000`
+
+   - MindsDB GUI: `http://localhost:47334`
 
 3. **Supply Chain Optimization**:
     - The application predicts shipment delays based on origin, destination, traffic conditions, and weather using **MindsDB**. This helps logistics and e-commerce platforms optimize their shipping processes by anticipating potential delays.

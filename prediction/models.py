@@ -1,19 +1,48 @@
 from django.db import models
+from django.utils import timezone
 
-class ShipmentData(models.Model):
-    origin = models.CharField(max_length=255)
-    destination = models.CharField(max_length=255)
-    dispatch_date = models.DateTimeField()
-    expected_arrival_date = models.DateTimeField()
-    traffic_conditions = models.CharField(max_length=100)
-    weather_conditions = models.CharField(max_length=100)
-    actual_arrival_date = models.DateTimeField(null=True, blank=True)
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    reorder_level = models.IntegerField()
+    
+    def __str__(self):
+        return self.name
+
+class Inventory(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    last_updated = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name_plural = "Inventory"
 
 class SalesData(models.Model):
-    product_name = models.CharField(max_length=255)
-    sales_date = models.DateTimeField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    date = models.DateField(default=timezone.now)  # Add default value
+    promotion = models.BooleanField(default=False)
+    season = models.CharField(max_length=20, choices=[
+        ('Winter', 'Winter'),
+        ('Spring', 'Spring'), 
+        ('Summer', 'Summer'),
+        ('Autumn', 'Autumn')
+    ])
     sales_quantity = models.IntegerField()
-    price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
-    total_sales = models.DecimalField(max_digits=10, decimal_places=2)
-    promotion = models.BooleanField()
-    season = models.CharField(max_length=100)
+
+class ShipmentData(models.Model):
+    origin = models.CharField(max_length=100)
+    destination = models.CharField(max_length=100)
+    dispatch_date = models.DateField()
+    expected_arrival = models.DateField()
+    actual_arrival = models.DateField(null=True, blank=True)
+    traffic_conditions = models.CharField(max_length=20, choices=[
+        ('Light', 'Light'),
+        ('Moderate', 'Moderate'),
+        ('Heavy', 'Heavy'),
+        ('Severe', 'Severe')
+    ])
+    weather_conditions = models.CharField(max_length=20, choices=[
+        ('Clear', 'Clear'),
+        ('Rainy', 'Rainy'),
+        ('Snowy', 'Snowy'),
+        ('Stormy', 'Stormy')
+    ])

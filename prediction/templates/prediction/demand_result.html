@@ -1,33 +1,95 @@
 {% extends "prediction/index.html" %}
 {% load static %}
 
-{% block demand_forecastingactive %}active{% endblock demand_forecastingactive %}
+{% block demand_forecastingactive %}active{% endblock %}
 
 {% block css %}
 <style>
-  #chat-reply {
-    margin-top: 20px;
+  .result-card {
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .result-header {
+    background: linear-gradient(135deg, #4e73df 0%, #2a48ad 100%);
+    color: white;
+    padding: 1.5rem;
+  }
+  
+  .result-body {
+    padding: 2rem;
+    background: white;
+  }
+  
+  .prediction-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2a48ad;
+  }
+  
+  .detail-item {
+    margin-bottom: 0.75rem;
+  }
+  
+  .detail-label {
+    font-weight: 500;
+    color: #6c757d;
   }
 </style>
-{% endblock css %}
+{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-  <h1 class="mb-4">Demand Forecasting Result</h1>
-
-  <div class="card">
-    <div class="card-body">
-      {% if error %}
-        <div class="alert alert-danger" role="alert">
-          <strong>Error:</strong> {{ error }}
+<div class="result-card shadow">
+  <div class="result-header text-center">
+    <h3><i class="fas fa-chart-bar me-2"></i>Forecast Result</h3>
+  </div>
+  
+  <div class="result-body">
+    {% if error %}
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ error }}
+      </div>
+      
+      <a href="{% url 'demand_forecasting' %}" class="btn btn-secondary w-100 mt-3">
+        <i class="fas fa-arrow-left me-2"></i>Try Again
+      </a>
+    {% else %}
+      <div class="text-center mb-4">
+        <div class="prediction-value">{{ predicted_sales }}</div>
+        <div class="text-muted">Predicted Sales Quantity</div>
+      </div>
+      
+      <div class="details mb-4">
+        <div class="detail-item">
+          <span class="detail-label">Product:</span>
+          <span>{{ product_name }}</span>
         </div>
-      {% else %}
-        <div class="alert alert-success" role="alert">
-          <strong>Predicted Sales:</strong> {{ predicted_sales }}
+        <div class="detail-item">
+          <span class="detail-label">Date:</span>
+          <span>{{ sales_date }}</span>
         </div>
-      {% endif %}
-      <a href="{% url 'demand_forecasting' %}" class="btn btn-secondary mt-3">Back to Form</a>
-    </div>
+        <div class="detail-item">
+          <span class="detail-label">Season:</span>
+          <span>{{ season }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Promotion:</span>
+          <span>{{ promotion|yesno:"Yes,No" }}</span>
+        </div>
+      </div>
+      
+      <div class="d-flex gap-2">
+        <a href="{% url 'demand_forecasting' %}" class="btn btn-secondary flex-grow-1">
+          <i class="fas fa-arrow-left me-2"></i>New Forecast
+        </a>
+        <a href="{% url 'inventory_optimization' %}" class="btn btn-primary flex-grow-1">
+          <i class="fas fa-boxes me-2"></i>Check Inventory
+        </a>
+      </div>
+    {% endif %}
   </div>
 </div>
-{% endblock body %}
+{% endblock %}
