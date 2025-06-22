@@ -1,37 +1,76 @@
+import mindsdb_sdk as SDK
 from mindsdb_sdk import connect
+from django.conf import settings
+import logging
+from dotenv import load_dotenv
+import os
 
-mdb = connect()
+load_dotenv()
 
-def predict_demand(product_name, sales_date, promotion, season):
-    try:
-        predictor = mdb.get_predictor('demand_forecast_predictor')
+logger = logging.getLogger(__name__)
 
-        result = predictor.predict({
-            'product_name': product_name,
-            'sales_date': sales_date,
-            'promotion': promotion,
-            'season': season
-        })
+class MindsDBHelper:
+    def __init__(self):
+        self.connection = None
+        self._connect()
 
-        return result[0]['sales_quantity']
-    except Exception as e:
-        print("Prediction error (demand):", str(e))
-        return None
+    def _connect(self):
+        try:
+            self.connection = connect(
+                os.getenv('MINDSDB_HOST'),        # host
+                int(os.getenv('MINDSDB_PORT')),   # port
+                os.getenv('MINDSDB_USER'),        # user
+                os.getenv('MINDSDB_PASSWORD')     # password
+            )
+        except Exception as e:
+            logger.error(f"Failed to connect to MindsDB: {str(e)}")
+            raise
 
-def predict_shipment_delay(origin, destination, dispatch_date, expected_arrival_date, traffic_conditions, weather_conditions):
-    try:
-        predictor = mdb.get_predictor('shipment_delay_predictor')
+    def predict_demand(self, product_name, sales_date, promotion, season):
+        try:
+            predictor = self.connection.predictors.demand_forecast_predictor
+            result = predictor.predict({
+                'product_name': product_name,
+                'sales_date': sales_date,
+                'promotion': promotion,
+                'season': season
+            })
+            return result[0]['sales_quantity'] if result else None
+        except Exception as e:
+            logger.error(f"Demand prediction failed: {str(e)}")
+            return None
 
-        result = predictor.predict({
-            'origin': origin,
-            'destination': destination,
-            'dispatch_date': dispatch_date,
-            'expected_arrival_date': expected_arrival_date,
-            'traffic_conditions': traffic_conditions,
-            'weather_conditions': weather_conditions
-        })
+    def predict_shipment(self, origin, destination, dispatch_date,
+                         expected_arrival_date, traffic_conditions, weather_conditions):
+        try:
+            predictor = self.connection.predictors.shipment_delay_predictor
+            result = predictor.predict({
+                'origin': origin,
+                'destination': destination,
+                'dispatch_date': dispatch_date,
+                'expected_arrival_date': expected_arrival_date,
+                'traffic_conditions': traffic_conditions,
+                'weather_conditions': weather_conditions
+            })
+            return result[0]['predicted_arrival_date'] if result else None
+        except Exception as e:
+            logger.error(f"Shipment prediction failed: {str(e)}")
+            return None
 
-        return result[0]['actual_arrival_date']
-    except Exception as e:
-        print("Prediction error (shipment):", str(e))
-        return None
+    def query_agent(self, question):
+        try:
+            agent = self.connection.agents.supply_chain_agent
+            result = agent.query(question)
+            return result[0]['answer'] if result else None
+        except Exception as e:
+            logger.error(f"Agent query failed: {str(e)}")
+            return None
+
+    def execute_sql(self, query, params=None):
+        try:
+            return self.connection.sql(query, params)
+        except Exception as e:
+            logger.error(f"SQL execution failed: {str(e)}")
+            return None
+
+mdb_helper = MindsDBHelper()
