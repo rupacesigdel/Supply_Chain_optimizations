@@ -38,9 +38,9 @@ This project is a Django-based web application designed to provide insights and 
 ## Technologies Used
 - Python
 - Django
-- MindsDB 24.7.1.0
-- PostgreSQL (for Django database and MindsDB integration)
-
+- MindsDB
+- MYSQL (for Django database and MindsDB integration)
+- KB
   
 ## Installation
 
