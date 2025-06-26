@@ -17,7 +17,7 @@ This project is a Django-based web application designed to provide insights and 
 - [Acknowledgments](#acknowledgments)
 
 ## Demo Video
-[Watch the demo video]()
+[Watch the demo video](https://github.com/user-attachments/assets/57f62637-e2ff-470a-80a7-6e9e7f936ba6)
 
 
 ## Features
